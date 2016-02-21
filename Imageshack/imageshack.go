@@ -35,6 +35,6 @@ type ImageShack struct {
 }
 
 // NewImageShack alloc and returns a new *ImageShack{} struct
-func NewImageShack() *ImageShack {
+func NewImageShack() (i *ImageShack) {
 	return &ImageShack{}
 }

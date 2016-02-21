@@ -16,77 +16,21 @@ package main
 
 import (
 	"bytes"
-	"errors"
 	"fmt"
-	"io/ioutil"
 	"log"
-	"net/http"
 	"os"
 	"strings"
 
 	"github.com/hoenirvili/ImageCompress/Imageshack"
 	"github.com/hoenirvili/ImageCompress/Imgur"
 	"github.com/hoenirvili/ImageCompress/Tinypng"
+	"github.com/hoenirvili/PNGCompress/Util"
 )
 
 const (
 	clientID     = "40aea5f08c0f717"
 	clientSecret = "a72c35d27b38d27114b4503e5b9acc835861ed8c"
 )
-
-func concat(first, second string) (string, error) {
-	//init
-	nCopied := 0
-
-	// get lens
-	lenFirst := len(first)
-	lenSecond := len(second)
-
-	// sum of both lens
-	n := lenFirst + lenSecond
-
-	// alloc holder
-	holder := make([]byte, n)
-
-	// copy the first holder from pos nCopied:=0
-	nCopied = copy(holder[nCopied:], first)
-
-	// if everything is ok copy the second one.
-	if nCopied != n-lenSecond {
-		return "", errors.New("Can't copy first string")
-	}
-
-	// coy the second holder from pos nCopied:= previousNcopied
-	nCopied = copy(holder[nCopied:], second)
-
-	if nCopied != n-lenFirst {
-		return "", errors.New("Can't copy the second string")
-	}
-
-	// TODO find a better way to convert it to string
-	return string(holder), nil
-}
-
-// dumpResponse for debugging informatin
-func dumpResponse(resp *http.Response) {
-	for key, val := range resp.Header {
-		fmt.Print(key)
-		fmt.Print(" : ")
-		fmt.Println(val)
-	}
-	fmt.Printf("Status : %s\n", resp.Status)
-	readed, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println()
-	fmt.Println("===================== BODY ====================")
-	fmt.Println()
-	fmt.Println(string(readed))
-
-	// for any case
-	defer resp.Body.Close()
-}
 
 // imgurToTiny just send image to tinyPNG
 func imgurToTiny() {
@@ -114,7 +58,7 @@ func shackToTiny() {
 	shack := Imageshack.NewImageShack()
 	tiny := Tinypng.NewTiny()
 	v := shack.ImageJSON("https://api.imageshack.com/v2/images/pbzPCsEij")
-	url, err := concat("https://", v.Result.Direct_link)
+	url, err := Util.Concat("https://", v.Result.Direct_link)
 
 	if err != nil {
 		log.Fatal(err)

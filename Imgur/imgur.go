@@ -64,21 +64,21 @@ func (i *Imgur) SetBody(body io.Reader) {
 }
 
 // ClientID get's the client id
-func (i Imgur) ClientID() string {
+func (i Imgur) ClientID() (id string) {
 	return i.clientID
 }
 
 //ClientSecret get's client secretID
-func (i Imgur) ClientSecret() string {
+func (i Imgur) ClientSecret() (secret string) {
 	return i.clientSecret
 }
 
 // Body get's the body
-func (i Imgur) Body() io.Reader {
+func (i Imgur) Body() (body io.Reader) {
 	return i.body
 }
 
 //NewImgur alloc a new pointer to Imgur{} struct
-func NewImgur() *Imgur {
+func NewImgur() (i *Imgur) {
 	return &Imgur{}
 }

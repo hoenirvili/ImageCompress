@@ -28,7 +28,7 @@ import (
 
 // Base64 encoding defined by rfc RFC2045-MIME
 // plus concat the "Basic: "word.
-func sanitizeHeader(username, key string) string {
+func sanitizeHeader(username, key string) (header string) {
 	sEnc := base64.StdEncoding.EncodeToString([]byte(fmt.Sprintf("%s%s", username, key)))
 	return fmt.Sprintf("Basic %s", sEnc)
 }

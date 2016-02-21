@@ -23,7 +23,7 @@ import (
 )
 
 // Get request
-func (i ImageShack) Get(url, mime string) (*http.Response, error) {
+func (i ImageShack) Get(url, mime string) (resp *http.Response, respErr error) {
 	request, err := http.NewRequest("GET", url, new(bytes.Buffer))
 	request.Header.Add("Content-Type", mime)
 	if err != nil {
@@ -40,7 +40,7 @@ func (i ImageShack) Get(url, mime string) (*http.Response, error) {
 }
 
 // ImageJSON request imageshack
-func (i ImageShack) ImageJSON(url string) *ImageShackJSON {
+func (i ImageShack) ImageJSON(url string) (apiJSON *ImageShackJSON) {
 	body := new(bytes.Buffer)
 	req, err := http.NewRequest("GET", url, body)
 	req.Header.Add("Content-Type", "application/json")
@@ -64,7 +64,7 @@ func (i ImageShack) ImageJSON(url string) *ImageShackJSON {
 
 // ImageByte reads images from http response and serialize it
 // into byte
-func (i ImageShack) ImageByte(url string) []byte {
+func (i ImageShack) ImageByte(url string) (bodyByte []byte) {
 	resp, err := http.Get(url)
 
 	if err != nil {

@@ -90,7 +90,7 @@ func (i Imgur) NewRequest(methodRequest, urlRequest, mimeRequest string) (*http.
 
 // Get request to imgurl api with setting the mime content and url
 // returns a pointer to http.Reponse and in case of error  a pointer to ErrorStat
-func (i Imgur) Get(url, mime string) (*http.Response, *ErrorStat) {
+func (i Imgur) Get(url, mime string) (resp *http.Response, errStat *ErrorStat) {
 	request, err := i.NewRequest("GET", url, mime)
 	if err != nil {
 		return nil, err
@@ -112,7 +112,7 @@ func (i Imgur) Get(url, mime string) (*http.Response, *ErrorStat) {
 
 // ImageJSON returns serialez get response
 // https://api.imgur.com/3/gallery/image/{id}
-func (i Imgur) ImageJSON(url string) *Image {
+func (i Imgur) ImageJSON(url string) (retI *Image) {
 	mime := "application/json"
 	resp, err := i.Get(url, mime)
 	if err != nil {
@@ -132,7 +132,7 @@ func (i Imgur) ImageJSON(url string) *Image {
 
 // ImageByte http request and return image serialized body
 // https://api.imgur.com/3/gallery/image/{id}
-func (i Imgur) ImageByte(url string) []byte {
+func (i Imgur) ImageByte(url string) (byteBody []byte) {
 	resp, err := http.Get(url)
 
 	if err != nil {

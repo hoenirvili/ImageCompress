@@ -45,7 +45,7 @@ type Tiny struct {
 }
 
 // NewTiny to alloc a
-func NewTiny() *Tiny {
+func NewTiny() (t *Tiny) {
 	return &Tiny{}
 }
 
@@ -55,6 +55,6 @@ func (t *Tiny) SetBody(b []byte) {
 }
 
 //Body get value for body
-func (t Tiny) Body() []byte {
+func (t Tiny) Body() (body []byte) {
 	return t.body
 }

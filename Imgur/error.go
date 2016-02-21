@@ -52,7 +52,7 @@ func (err ErrorJSON) Print() {
 }
 
 // ErrorResponseJSON check header error and handle it.
-func ErrorResponseJSON(statusCode int, response []byte) *ErrorJSON {
+func ErrorResponseJSON(statusCode int, response []byte) (errStat *ErrorJSON) {
 	switch statusCode {
 	case 400, 401, 403, 404, 429, 500:
 		jsonErr := &ErrorJSON{}
@@ -75,7 +75,7 @@ type ErrorStat struct {
 func (e ErrorStat) String() string {
 	return fmt.Sprintf("Error : %s\n", e.msg)
 }
-func errorStatus(statusCode int) *ErrorStat {
+func errorStatus(statusCode int) (errStat *ErrorStat) {
 	switch statusCode {
 	case 400:
 		return &ErrorStat{msg: fmt.Sprintf("Error : %d %s\n", statusCode, "Parameter is missing or a parameter has a value that is out of bounds or otherwise incorrect.image uploads fail due to images that are corrupt or do not meet the format requirements.")}
