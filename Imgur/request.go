@@ -24,6 +24,8 @@ import (
 	"net/http"
 	"net/url"
 	"strings"
+
+	"github.com/hoenirvili/ImageCompress/Util"
 )
 
 // Basic request struct for api
@@ -120,6 +122,12 @@ func (i Imgur) ImageJSON(url string) (retI *Image) {
 		return nil
 	}
 
+	err = errorStatus(resp.StatusCode)
+	if err != nil {
+		err.Print()
+		return nil
+	}
+
 	img := &Image{}
 
 	errJSON := json.NewDecoder(resp.Body).Decode(img)
@@ -139,13 +147,16 @@ func (i Imgur) ImageByte(url string) (byteBody []byte) {
 		log.Fatal(err)
 	}
 
-	readed, err := ioutil.ReadAll(resp.Body)
-
-	if err != nil {
+	errStatus := errorStatus(resp.StatusCode)
+	if errStatus != nil {
+		errStatus.Print()
 		return nil
 	}
 
-	defer resp.Body.Close()
+	readed, err := Util.ResponseByteReader(resp)
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	return readed
 }

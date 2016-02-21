@@ -24,7 +24,7 @@ import (
 	"github.com/hoenirvili/ImageCompress/Imageshack"
 	"github.com/hoenirvili/ImageCompress/Imgur"
 	"github.com/hoenirvili/ImageCompress/Tinypng"
-	"github.com/hoenirvili/PNGCompress/Util"
+	"github.com/hoenirvili/ImageCompress/Util"
 )
 
 const (
@@ -36,7 +36,7 @@ const (
 func imgurToTiny() {
 	// alloc
 	imgur := Imgur.NewImgur()
-	tiny := Tinypng.NewTiny()
+	//tiny := Tinypng.NewTiny()
 	// set
 	imgur.SetClientID(clientID)
 	imgur.SetClientSecret(clientSecret)
@@ -44,9 +44,10 @@ func imgurToTiny() {
 	// get request JSON response
 	v := imgur.ImageJSON("https://api.imgur.com/3/gallery/image/i0xn0Dx")
 	if v.Data.Type == "image/png" || v.Data.Type == "image/jpeg" {
-		byteImage := imgur.ImageByte(v.Data.Link)
-		tiny.SetBody(byteImage)
-		tiny.Post(v.Data.Type)
+		//byteImage := imgur.ImageByte(v.Data.Link)
+
+		//tiny.SetBody(byteImage)
+		//tiny.Post(v.Data.Type)
 	} else {
 		fmt.Fprintf(os.Stderr, "Error: image is not PNG/JPG type\n")
 		fmt.Fprintf(os.Stderr, "Please enter a valid PNG/JPG file type\n")
@@ -81,6 +82,6 @@ func shackToTiny() {
 func main() {
 
 	imgurToTiny()
-	shackToTiny()
+	//	shackToTiny()
 
 }

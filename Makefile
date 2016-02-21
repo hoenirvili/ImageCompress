@@ -1,5 +1,6 @@
 all:
-	go run main.go
+	go build
+	./ImageCompress
 
 clean:
 	rm -rf *.png
