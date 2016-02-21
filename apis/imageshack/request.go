@@ -17,67 +17,90 @@ package imageshack
 import (
 	"bytes"
 	"encoding/json"
-	"io/ioutil"
+	"fmt"
 	"log"
 	"net/http"
+
+	"github.com/hoenirvili/ImageCompress/internal"
+	"github.com/hoenirvili/ImageCompress/utils"
 )
 
 // Get request
-func (i ImageShack) Get(url, mime string) (resp *http.Response, respErr error) {
-	request, err := http.NewRequest("GET", url, new(bytes.Buffer))
-	request.Header.Add("Content-Type", mime)
+func (i ImageShack) Get(url, mime string) (*http.Response, error) {
+	// make new pointer to *http.Resquest
+	// with GET method, url and a new byes.Buffer body
+	req, err := http.NewRequest("GET", url, new(bytes.Buffer))
 	if err != nil {
-		return nil, err
+		return nil, &internal.ErrorStat{Message: "Can't create new GET request to Image Shack"}
 	}
+
+	// add the corresponding header
+	req.Header.Add("Content-Type", mime)
+	// alloc new *http.Client
 	client := &http.Client{}
-	response, err := client.Do(request)
 
+	// make client request with the http.Request above declared
+	resp, err := client.Do(req)
 	if err != nil {
-		return nil, err
+		return nil, &internal.ErrorStat{Message: "GET request to ImageShack api failed"}
 	}
 
-	return response, nil
+	if resp.StatusCode > http.StatusPartialContent {
+		return nil, &internal.ErrorStat{Message: fmt.Sprintf("%s %s", resp.Status, "POST request to ImageShack api failed")}
+	}
+
+	// return it
+	return resp, nil
 }
 
 // ImageJSON request imageshack
-func (i ImageShack) ImageJSON(url string) (apiJSON *ImageShackJSON) {
-	body := new(bytes.Buffer)
-	req, err := http.NewRequest("GET", url, body)
-	req.Header.Add("Content-Type", "application/json")
+func (i ImageShack) ImageJSON(url string) (*ImageShackJSON, error) {
+
+	resp, err := i.Get(url, "application/json")
 	if err != nil {
-		log.Fatal(err)
+		return nil, err
 	}
-	cli := http.Client{}
-	resp, err := cli.Do(req)
-	if err != nil {
-		log.Fatal(err)
-	}
+
+	// aloc imgJSON struct for decoding the response body
 	imgJSON := &ImageShackJSON{}
 
+	// decode into JSON
 	err = json.NewDecoder(resp.Body).Decode(imgJSON)
 	if err != nil {
-		log.Fatal(err)
+		return nil, err
 	}
 
-	return imgJSON
+	// close body response
+	defer func() {
+		err = resp.Body.Close()
+		if err != nil {
+			log.Fatal(err)
+		}
+	}()
+
+	// return the JSON
+	return imgJSON, nil
 }
 
-// ImageByte reads images from http response and serialize it
-// into byte
-func (i ImageShack) ImageByte(url string) (bodyByte []byte) {
-	resp, err := http.Get(url)
-
+// ImageByte reads images from http response
+// and serialize it into byte
+func (i ImageShack) ImageByte(url, mime string) ([]byte, error) {
+	resp, err := i.Get(url, mime)
 	if err != nil {
-		log.Fatal(err)
+		return nil, err
 	}
 
-	readed, err := ioutil.ReadAll(resp.Body)
-
+	readed, err := utils.ResponseByteReader(resp)
 	if err != nil {
-		return nil
+		return nil, err
 	}
 
-	defer resp.Body.Close()
-
-	return readed
+	// close body response
+	defer func() {
+		err = resp.Body.Close()
+		if err != nil {
+			log.Fatal(err)
+		}
+	}()
+	return readed, nil
 }

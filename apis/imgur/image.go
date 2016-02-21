@@ -15,7 +15,8 @@
 
 package imgur
 
-//Image type struct JSON
+// Image struct represents the JSON fromat image reponse from
+// api imgur. Note that every field it's exported and global.
 type Image struct {
 	Data struct {
 		ID          string // The ID for the image

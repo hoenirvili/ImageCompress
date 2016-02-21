@@ -23,18 +23,20 @@ package imageshack
 //       "filename":"ggZf2A.jpg",
 //       "original_filename":"e1ab262c288441e252ea507676e6c8a8.jpg",
 //       "direct_link":"imagizer.imageshack.com\/img661\/8761\/ggZf2A.jpg",
-// ImageShackJSON struct that hold JSON response serialized
+
+// ImageShackJSON struct that hold JSON http response
 type ImageShackJSON struct {
 	Result struct {
 		Direct_link string
 	}
 }
 
-// ImageShack nacked struct
+// ImageShack naked struct
+// Note that naked structs are zero cost memory
 type ImageShack struct {
 }
 
-// NewImageShack alloc and returns a new *ImageShack{} struct
+// NewImageShack alloc and returns a new *ImageShack
 func NewImageShack() (i *ImageShack) {
 	return &ImageShack{}
 }

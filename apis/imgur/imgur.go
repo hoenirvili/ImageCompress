@@ -19,25 +19,25 @@ import "io"
 // TestBaseURL just testing purpose
 const TestBaseURL = "https://api.imgur.com/3/gallery/nuSZyEE"
 
-//curl -H "Authorization: Client-ID 40aea5f08c0f717" https://api.imgur.com/3/gallery/nuSZyEE
 // Addon for production purpose attachemnt
 // for HTTP header request.
+// Special flags for imgur api
 const (
-	UserLimit       = "X-RateLimit-UserLimit"
-	UserRemaining   = "X-RateLimit-UserRemaining"
-	UserReset       = "X-RateLimit-UserReset"
-	ClientLimit     = "X-RateLimit-ClientLimit"
-	ClientRemaining = "X-RateLimit-ClientRemaining"
+	userLimit       = "X-RateLimit-UserLimit"
+	userRemaining   = "X-RateLimit-UserRemaining"
+	userReset       = "X-RateLimit-UserReset"
+	clientLimit     = "X-RateLimit-ClientLimit"
+	clientRemaining = "X-RateLimit-ClientRemaining"
 )
 
 // Basic Imgur api configuration
 const (
-	BaseURL  = "https://api.imgur.com/3"
-	StateURL = "https://api.imgur.com/3/credits"
+	baseURL  = "https://api.imgur.com/3"
+	stateURL = "https://api.imgur.com/3/credits"
 )
 
-// Imgur type struct
-// for specific app info
+// Imgur type struct for config
+// api app info
 type Imgur struct {
 	clientID     string
 	clientSecret string
@@ -64,12 +64,12 @@ func (i *Imgur) SetBody(body io.Reader) {
 }
 
 // ClientID get's the client id
-func (i Imgur) ClientID() (id string) {
+func (i Imgur) ClientID() string {
 	return i.clientID
 }
 
 //ClientSecret get's client secretID
-func (i Imgur) ClientSecret() (secret string) {
+func (i Imgur) ClientSecret() string {
 	return i.clientSecret
 }
 

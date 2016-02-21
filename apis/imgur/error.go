@@ -18,6 +18,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+
+	"github.com/hoenirvili/ImageCompress/internal"
 )
 
 // {
@@ -29,9 +31,11 @@ import (
 //    "success": false,
 //    "status": 403
 // }
-
-// ErrorJSON error api struct
-type ErrorJSON struct {
+// ErrorImgurJSON error api construct error
+// we can use this struct in order to parse api imgur response error
+// note that we don't export this func because it's just belongs inside
+// imgur package because it's internal to api imgur error response json
+type errorImgurJSON struct {
 	Data struct {
 		Error   string
 		Request string
@@ -42,20 +46,20 @@ type ErrorJSON struct {
 }
 
 // Implement error interface
-func (err ErrorJSON) Error() string {
+func (err errorImgurJSON) Error() string {
 	return fmt.Sprintf(" Error Code : %d\n Error method : %s\n Error message : %s\n Request: %s\n", err.Status, err.Data.Method, err.Data.Error, err.Data.Request)
 }
 
 // Print just print the Code errors after JSON parse
-func (err ErrorJSON) Print() {
+func (err errorImgurJSON) Print() {
 	fmt.Fprintf(os.Stderr, " Error Code : %d\n Error method : %s\n Error message : %s\n Request: %s\n", err.Status, err.Data.Method, err.Data.Error, err.Data.Request)
 }
 
 // ErrorResponseJSON check header error and handle it.
-func ErrorResponseJSON(statusCode int, response []byte) (errStat *ErrorJSON) {
+func errorResponseJSON(statusCode int, response []byte) *errorImgurJSON {
 	switch statusCode {
 	case 400, 401, 403, 404, 429, 500:
-		jsonErr := &ErrorJSON{}
+		jsonErr := &errorImgurJSON{}
 		err := json.Unmarshal(response, jsonErr)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Can't Unmarshall error json")
@@ -66,35 +70,23 @@ func ErrorResponseJSON(statusCode int, response []byte) (errStat *ErrorJSON) {
 	return nil
 }
 
-// ErrorStat internal api error
-type ErrorStat struct {
-	msg string
-}
-
-// ErrorStat implements Stringer inteface
-func (e ErrorStat) String() string {
-	return fmt.Sprintf("Error : %s\n", e.msg)
-}
-func errorStatus(statusCode int) (errStat *ErrorStat) {
+// erroHttpStatus just checks if it's an error and parses
+// corresponding massage suggested in imgur api handle error.
+func errorHTTPStatus(statusCode int) *internal.ErrorStat {
 	switch statusCode {
 	case 400:
-		return &ErrorStat{msg: fmt.Sprintf("Error : %d %s\n", statusCode, "Parameter is missing or a parameter has a value that is out of bounds or otherwise incorrect.image uploads fail due to images that are corrupt or do not meet the format requirements.")}
+		return &internal.ErrorStat{Message: fmt.Sprintf("Error : %d %s\n", statusCode, "Parameter is missing or a parameter has a value that is out of bounds or otherwise incorrect.image uploads fail due to images that are corrupt or do not meet the format requirements.")}
 	case 401:
-		return &ErrorStat{msg: fmt.Sprintf("Error : %d %s\n", statusCode, "The request requires user authentication.")}
+		return &internal.ErrorStat{Message: fmt.Sprintf("Error : %d %s\n", statusCode, "The request requires user authentication.")}
 	case 403:
-		return &ErrorStat{msg: fmt.Sprintf("Error : %d %s\n", statusCode, "Forbidden. You don't have access to this action.")}
+		return &internal.ErrorStat{Message: fmt.Sprintf("Error : %d %s\n", statusCode, "Forbidden. You don't have access to this action.")}
 	case 404:
-		return &ErrorStat{msg: fmt.Sprintf("Error : %d %s\n", statusCode, "Resource does not exist.")}
+		return &internal.ErrorStat{Message: fmt.Sprintf("Error : %d %s\n", statusCode, "Resource does not exist.")}
 	case 429:
-		return &ErrorStat{msg: fmt.Sprintf("Error : %d %s\n", statusCode, "Rate limiting on the application or on the user's IP address.")}
+		return &internal.ErrorStat{Message: fmt.Sprintf("Error : %d %s\n", statusCode, "Rate limiting on the application or on the user's IP address.")}
 	case 500:
-		return &ErrorStat{msg: fmt.Sprintf("Error : %d %s\n", statusCode, "Unexpected internal error. Something is broken with the Imgur service.")}
+		return &internal.ErrorStat{Message: fmt.Sprintf("Error : %d %s\n", statusCode, "Unexpected internal error. Something is broken with the Imgur service.")}
 	}
-
+	// if it's not these types of erros just return nil.
 	return nil
-}
-
-// Print error stat error
-func (e ErrorStat) Print() {
-	fmt.Fprintf(os.Stderr, "%s", e.msg)
 }
