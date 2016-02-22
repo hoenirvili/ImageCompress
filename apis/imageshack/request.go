@@ -18,15 +18,16 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"net/http"
 
 	"github.com/hoenirvili/ImageCompress/internal"
-	"github.com/hoenirvili/ImageCompress/utils"
 )
 
 // Get request
-func (i ImageShack) Get(url, mime string) (*http.Response, error) {
+func (i ImageShack) Get(url string) (*http.Response, error) {
+
 	// make new pointer to *http.Resquest
 	// with GET method, url and a new byes.Buffer body
 	req, err := http.NewRequest("GET", url, new(bytes.Buffer))
@@ -34,8 +35,6 @@ func (i ImageShack) Get(url, mime string) (*http.Response, error) {
 		return nil, &internal.ErrorStat{Message: "Can't create new GET request to Image Shack"}
 	}
 
-	// add the corresponding header
-	req.Header.Add("Content-Type", mime)
 	// alloc new *http.Client
 	client := &http.Client{}
 
@@ -56,7 +55,7 @@ func (i ImageShack) Get(url, mime string) (*http.Response, error) {
 // ImageJSON request imageshack
 func (i ImageShack) ImageJSON(url string) (*ImageShackJSON, error) {
 
-	resp, err := i.Get(url, "application/json")
+	resp, err := i.Get(url)
 	if err != nil {
 		return nil, err
 	}
@@ -84,13 +83,13 @@ func (i ImageShack) ImageJSON(url string) (*ImageShackJSON, error) {
 
 // ImageByte reads images from http response
 // and serialize it into byte
-func (i ImageShack) ImageByte(url, mime string) ([]byte, error) {
-	resp, err := i.Get(url, mime)
+func (i ImageShack) ImageByte(url string) ([]byte, error) {
+	resp, err := i.Get(url)
 	if err != nil {
 		return nil, err
 	}
 
-	readed, err := utils.ResponseByteReader(resp)
+	readed, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		return nil, err
 	}

@@ -15,7 +15,11 @@
 
 package utils
 
-import "errors"
+import (
+	"fmt"
+
+	"github.com/hoenirvili/ImageCompress/internal"
+)
 
 // Concat concat two string into one
 func Concat(first, second string) (result string, err error) {
@@ -37,14 +41,14 @@ func Concat(first, second string) (result string, err error) {
 
 	// if everything is ok copy the second one.
 	if nCopied != n-lenSecond {
-		return "", errors.New("Can't copy first string")
+		return "", internal.ErrorStat{Message: fmt.Sprintf("%s", "Can't copy the first string")}
 	}
 
 	// coy the second holder from pos nCopied:= previousNcopied
 	nCopied = copy(holder[nCopied:], second)
 
 	if nCopied != n-lenFirst {
-		return "", errors.New("Can't copy the second string")
+		return "", internal.ErrorStat{Message: fmt.Sprintf("%s", "Can't copy the second string")}
 	}
 
 	// TODO find a better way to convert it to string

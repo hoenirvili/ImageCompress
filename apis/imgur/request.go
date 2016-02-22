@@ -26,7 +26,7 @@ import (
 
 // Get request to imgurl api with setting the mime content and url
 // returns a pointer to http.Reponse and in case of error  a pointer to ErrorStat
-func (i Imgur) Get(url, mime string) (*http.Response, *internal.ErrorStat) {
+func (i Imgur) Get(url string) (*http.Response, *internal.ErrorStat) {
 	req, err := http.NewRequest("GET", url, new(bytes.Buffer))
 	if err != nil {
 		return nil, &internal.ErrorStat{Message: "Can't create new request to Imgurl"}
@@ -55,7 +55,7 @@ func (i Imgur) Get(url, mime string) (*http.Response, *internal.ErrorStat) {
 // ImageJSON returns serialez get response
 // https://api.imgur.com/3/gallery/image/{id}
 func (i Imgur) ImageJSON(url string) (*Image, error) {
-	resp, errGet := i.Get(url, "application/json")
+	resp, errGet := i.Get(url)
 	if errGet != nil {
 		return nil, errGet
 	}
@@ -70,29 +70,16 @@ func (i Imgur) ImageJSON(url string) (*Image, error) {
 
 // ImageByte http request and return image serialized body
 // https://api.imgur.com/3/gallery/image/{id}
-func (i Imgur) ImageByte(url, mime string) ([]byte, error) {
-	resp, errGet := i.Get(url, mime)
+func (i Imgur) ImageByte(url string) ([]byte, error) {
+	resp, errGet := i.Get(url)
 	if errGet != nil {
 		return nil, errGet
 	}
 
-	// TODO FIND A BETTER WAY
 	readed, err := ioutil.ReadAll(resp.Body)
-	// readed, err := utils.ResponseByteReader(resp)
 	if err != nil {
 		return nil, err
 	}
 
 	return readed, nil
-}
-
-//SaveImage saves images
-func (i Imgur) SaveImage(img []byte, path string) error {
-
-	err := ioutil.WriteFile(path, img, 0644)
-	if err != nil {
-		return internal.ErrorStat{Message: fmt.Sprintf("%s", "Can't save image from Imgurl")}
-	}
-
-	return nil
 }

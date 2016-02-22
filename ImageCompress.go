@@ -19,10 +19,13 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strings"
 	// import all other side packages
 
+	"github.com/hoenirvili/ImageCompress/apis/imageshack"
 	"github.com/hoenirvili/ImageCompress/apis/imgur"
 	"github.com/hoenirvili/ImageCompress/apis/tinypng"
+	"github.com/hoenirvili/ImageCompress/utils"
 )
 
 const (
@@ -44,32 +47,33 @@ func imgurToTiny() {
 	if err != nil {
 		log.Fatal(err)
 	}
-
 	if v.Data.Type == "image/png" || v.Data.Type == "image/jpeg" {
-		byteImage, err := imgur.ImageByte(v.Data.Link, v.Data.Type)
+		//err := imgur.DownloadImage(v.Data.Link, v.Data.Type, "myNewEPicImage")
+		byteImage, err := imgur.ImageByte(v.Data.Link)
 		if err != nil {
 			log.Fatal(err)
 		}
 		// prepare tiny for post Request
 		// setting body with the image downloaded from imgur
 		tiny.SetBody(byteImage)
-		tiny.PostTry(v.Data.Type)
-		// t, err := tiny.PostGetJSON(v.Data.Type)
-		// if err != nil {
-		// 	log.Fatal(err)
-		// }
-		//
-		// // get pic from tiny api
-		// pic, err := tiny.Get(t.Output.URL)
-		// if err != nil {
-		// 	fmt.Fprintf(os.Stderr, "%s", err)
-		// }
-		// fmt.Println(pic)
-		// // save image pic
-		// err = tiny.SaveImage(pic, "~/Work/Go/src/github.com/hoenirvili/ImageCompress/newImageCompressed", v.Data.Type)
-		// if err != nil {
-		// 	log.Fatal(err)
-		// }
+		// post request and get json response parsed
+		// t parsed json
+		t, err := tiny.PostGetJSON(v.Data.Type)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		// get pic from tiny api from json info
+		pic, err := tiny.Get(t.Output.URL) // byte []byte
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "%s", err)
+		}
+
+		// save image pic
+		err = tiny.SaveImage(pic, "newImageCompressedImgur", v.Data.Type)
+		if err != nil {
+			log.Fatal(err)
+		}
 	} else {
 		fmt.Fprintf(os.Stderr, "Error: image is not PNG/JPG type\n")
 		fmt.Fprintf(os.Stderr, "Please enter a valid PNG/JPG file type\n")
@@ -77,35 +81,85 @@ func imgurToTiny() {
 	}
 }
 
-// func shackToTiny() {
-// 	// alloc
-// 	shack := imageshack.NewImageShack()
-// 	tiny := tinypng.NewTiny()
-// 	v := shack.ImageJSON("https://api.imageshack.com/v2/images/pbzPCsEij")
-// 	url, err := utils.Concat("https://", v.Result.Direct_link)
-//
-// 	if err != nil {
-// 		log.Fatal(err)
-// 	}
-//
-// 	if strings.Contains(url, ".jpg") {
-// 		byteImage := shack.ImageByte(url)
-// 		tiny.SetBody(byteImage)
-// 		tiny.Post("image/jpeg")
-// 	} else if strings.Contains(url, ".png") {
-// 		byteImage := shack.ImageByte(url)
-// 		tiny.SetBody(byteImage)
-// 		tiny.Post("image/png")
-// 	} else {
-// 		fmt.Fprintf(os.Stderr, "Error: image is not PNG/JPG type\n")
-// 		fmt.Fprintf(os.Stderr, "Please enter a valid PNG/JPG file type\n")
-// 		os.Exit(1)
-// 	}
-// }
+func shackToTiny() {
+	// alloc
+	shack := imageshack.NewImageShack()
+	tiny := tinypng.NewTiny()
+	v, err := shack.ImageJSON("https://api.imageshack.com/v2/images/pbzPCsEij")
+	if err != nil {
+		log.Fatal(err)
+	}
+	// add https:// to link
+	url, err := utils.Concat("https://", v.Result.Direct_link)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	if strings.Contains(url, ".jpg") {
+		byteImage, err := shack.ImageByte(url)
+		if err != nil {
+			log.Fatal(err)
+		}
+		tiny.SetBody(byteImage)
+		// prepare tiny for post Request
+		// setting body with the image downloaded from imgur
+		tiny.SetBody(byteImage)
+		// post request and get json response parsed
+		// t parsed json
+		t, err := tiny.PostGetJSON("image/jpeg")
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		// get pic from tiny api from json info
+		pic, err := tiny.Get(t.Output.URL) // byte []byte
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "%s", err)
+		}
+
+		// save image pic
+		err = tiny.SaveImage(pic, "NewImageShackCompressedJPG", "image/jpeg")
+		if err != nil {
+			log.Fatal(err)
+		}
+	} else if strings.Contains(url, ".png") {
+		byteImage, err := shack.ImageByte(url)
+		if err != nil {
+			log.Fatal(err)
+		}
+		tiny.SetBody(byteImage)
+		// prepare tiny for post Request
+		// setting body with the image downloaded from imgur
+		tiny.SetBody(byteImage)
+		// post request and get json response parsed
+		// t parsed json
+		t, err := tiny.PostGetJSON("image/png")
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		// get pic from tiny api from json info
+		pic, err := tiny.Get(t.Output.URL) // byte []byte
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "%s", err)
+		}
+
+		// save image pic
+		err = tiny.SaveImage(pic, "NewImageShackCompressedPNG", "image/png")
+		if err != nil {
+			log.Fatal(err)
+		}
+	} else {
+		fmt.Fprintf(os.Stderr, "Error: image is not PNG/JPG type\n")
+		fmt.Fprintf(os.Stderr, "Please enter a valid PNG/JPG file type\n")
+		os.Exit(1)
+	}
+}
 
 func main() {
 
-	imgurToTiny()
-	//	shackToTiny()
+	//imgurToTiny()
+	shackToTiny()
 
 }
