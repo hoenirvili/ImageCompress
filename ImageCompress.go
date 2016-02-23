@@ -43,7 +43,7 @@ func imgurToTiny() {
 	imgur.SetClientSecret(clientSecret)
 	imgur.SetBody(new(bytes.Buffer))
 	// get request JSON response
-	v, err := imgur.ImageJSON("https://api.imgur.com/3/gallery/image/i0xn0Dx")
+	v, err := imgur.ImageJSON("https://api.imgur.com/3/gallery/image/CFzq6zN")
 	if err != nil {
 		log.Fatal(err)
 	}
