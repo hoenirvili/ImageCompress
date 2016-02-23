@@ -1,7 +1,7 @@
 # ImageCompress
 
 
-######A simple image compressor service written in golang.
+######A simple image compression service written in Go.
 
 
 ![gopher image](doc/gopher.png)
