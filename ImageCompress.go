@@ -159,7 +159,7 @@ func shackToTiny() {
 
 func main() {
 
-	//imgurToTiny()
-	shackToTiny()
+	imgurToTiny()
+	//shackToTiny()
 
 }
