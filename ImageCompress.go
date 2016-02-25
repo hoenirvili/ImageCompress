@@ -20,8 +20,8 @@ import (
 	"log"
 	"os"
 	"strings"
-	// import all other side packages
 
+	// import all other side packages
 	"github.com/hoenirvili/ImageCompress/apis/imageshack"
 	"github.com/hoenirvili/ImageCompress/apis/imgur"
 	"github.com/hoenirvili/ImageCompress/apis/tinypng"
@@ -64,7 +64,7 @@ func imgurToTiny() {
 		}
 
 		// get pic from tiny api from json info
-		pic, err := tiny.Get(t.Output.URL) // byte []byte
+		pic, err := tiny.Get(t.Output.URL)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "%s", err)
 		}
@@ -158,8 +158,6 @@ func shackToTiny() {
 }
 
 func main() {
-
 	imgurToTiny()
-	//shackToTiny()
-
+	shackToTiny()
 }

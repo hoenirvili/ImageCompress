@@ -87,7 +87,7 @@ func (i Imgur) DownloadImage(url, mime, name string) error {
 	return nil
 }
 
-//SaveImage saves images form byte serialez to hdd
+//SaveImageByte saves images form byte serialez to hdd
 func (i Imgur) SaveImageByte(img []byte, path string) error {
 	//TODO better opt way
 	err := ioutil.WriteFile(path, img, 0644)

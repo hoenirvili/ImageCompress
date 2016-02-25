@@ -53,7 +53,7 @@ func (i ImageShack) Get(url string) (*http.Response, error) {
 }
 
 // ImageJSON request imageshack
-func (i ImageShack) ImageJSON(url string) (*ImageShackJSON, error) {
+func (i ImageShack) ImageJSON(url string) (*Image, error) {
 
 	resp, err := i.Get(url)
 	if err != nil {
@@ -61,7 +61,7 @@ func (i ImageShack) ImageJSON(url string) (*ImageShackJSON, error) {
 	}
 
 	// aloc imgJSON struct for decoding the response body
-	imgJSON := &ImageShackJSON{}
+	imgJSON := &Image{}
 
 	// decode into JSON
 	err = json.NewDecoder(resp.Body).Decode(imgJSON)

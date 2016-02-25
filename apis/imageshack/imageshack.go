@@ -24,8 +24,8 @@ package imageshack
 //       "original_filename":"e1ab262c288441e252ea507676e6c8a8.jpg",
 //       "direct_link":"imagizer.imageshack.com\/img661\/8761\/ggZf2A.jpg",
 
-// ImageShackJSON struct that hold JSON http response
-type ImageShackJSON struct {
+// Image struct that hold JSON http response
+type Image struct {
 	Result struct {
 		Direct_link string
 	}
