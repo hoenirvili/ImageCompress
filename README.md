@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/hoenirvili/ImageCompress.svg?branch=master)](https://travis-ci.org/hoenirvili/ImageCompress)
 
-######A simple image compression service written in Go.
+###### A simple image compression service written in Go.
 
 
 ![gopher image](doc/gopher.png)

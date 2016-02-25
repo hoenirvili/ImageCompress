@@ -133,7 +133,7 @@ func TestDumpRequest(t *testing.T) {
 	fmt.Println("[ > ]\t Http Request")
 	fmt.Println()
 
-	req, err := http.NewRequest(http.MethodGet, urlTest, new(bytes.Buffer))
+	req, err := http.NewRequest("GET", urlTest, new(bytes.Buffer))
 	if err != nil {
 		log.Fatal(err)
 	}
