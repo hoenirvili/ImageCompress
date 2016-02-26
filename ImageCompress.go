@@ -17,7 +17,9 @@ package main
 import (
 	"bytes"
 	"fmt"
+	"html/template"
 	"log"
+	"net/http"
 	"os"
 	"strings"
 
@@ -26,6 +28,8 @@ import (
 	"github.com/hoenirvili/ImageCompress/apis/imgur"
 	"github.com/hoenirvili/ImageCompress/apis/tinypng"
 	"github.com/hoenirvili/ImageCompress/utils"
+	// vendor
+	"github.com/julienschmidt/httprouter"
 )
 
 const (
@@ -157,7 +161,29 @@ func shackToTiny() {
 	}
 }
 
+// Index handler just server index page
+func Index(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+	fmt.Printf("%+v", r)
+	index, err := template.ParseFiles("views/header.tmpl", "views/body.tmpl", "views/footer.tmpl", "views/base.tmpl")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	err = index.ExecuteTemplate(w, "base", nil)
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
 func main() {
-	imgurToTiny()
-	shackToTiny()
+	router := httprouter.New()
+	router.GET("/", Index)
+	// create http server and listen on port.
+	err := http.ListenAndServe(":8080", router)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// imgurToTiny()
+	// shackToTiny()
 }
