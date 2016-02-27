@@ -11,6 +11,7 @@ clean:
 	rm -rf *.jpg
 # Run the server
 run:
+	go build
 	./ImageCompress
 
 # Optimal build

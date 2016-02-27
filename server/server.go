@@ -27,11 +27,18 @@ const (
 
 // Init the server components middleware
 func Init() {
+	// load html into cache emplateList
+	// predefine package variable that renderHTML operates on
+	templateList = initTemplate()
 	// make a new router
 	router := httprouter.New()
+	// custon 404 not found page
+	router.NotFound = &undefineHandler{}
 
 	// define routs
 	router.GET("/", index)
+	// static resources
+	router.ServeFiles("/static/*filepath", http.Dir("static"))
 
 	// create http server and listen on port.
 	err := http.ListenAndServe(":8080", router)

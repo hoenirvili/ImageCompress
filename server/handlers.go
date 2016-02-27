@@ -15,9 +15,6 @@
 package server
 
 import (
-	"fmt"
-	"html/template"
-	"log"
 	"net/http"
 
 	"github.com/julienschmidt/httprouter"
@@ -25,14 +22,16 @@ import (
 
 // index internal handler just server index page
 func index(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	fmt.Printf("%+v", r)
-	index, err := template.ParseFiles("views/header.tmpl", "views/body.tmpl", "views/footer.tmpl", "views/base.tmpl")
-	if err != nil {
-		log.Fatal(err)
-	}
+	renderHTML(w, "index", http.StatusOK, nil)
+}
 
-	err = index.ExecuteTemplate(w, "base", nil)
-	if err != nil {
-		log.Fatal(err)
-	}
+// Empty struct
+type undefineHandler struct{}
+
+// Implement http.Handler interface
+func (u undefineHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	//notFound(w)
+	func(w http.ResponseWriter) {
+		renderHTML(w, "404", http.StatusNotFound, nil)
+	}(w)
 }
