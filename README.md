@@ -29,3 +29,8 @@ Sizes in bytes.
 	File: 'CFzq6zNCompressed.jpg'
 	Size: 72360     	Blocks: 144        IO Block: 4096   regular file
 ```
+
+
+#### License
+
+Apache License Version 2.0

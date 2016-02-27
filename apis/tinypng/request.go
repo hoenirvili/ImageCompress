@@ -18,6 +18,7 @@ package tinypng
 // Post send http post and parse the response
 import (
 	"bytes"
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -25,7 +26,6 @@ import (
 	"net/http"
 
 	"github.com/hoenirvili/ImageCompress/internal"
-	"github.com/hoenirvili/ImageCompress/netproto"
 )
 
 // Post request to tiny
@@ -40,7 +40,7 @@ func (t Tiny) Post(mime string) (*http.Response, error) {
 	}
 
 	//sanize header for auth header
-	authValue := netproto.HeaderToBase64(username, key)
+	authValue := headerToBase64(username, key)
 	request.Header.Add("Content-Type", mime)
 	request.Header.Add("Authorization", authValue)
 
@@ -60,6 +60,13 @@ func (t Tiny) Post(mime string) (*http.Response, error) {
 	fmt.Printf("%+v\n", resp)
 
 	return resp, nil
+}
+
+// HeaderToBase64 Base64 encoding defined by rfc RFC2045-MIME
+// plus concat the "Basic: "word.
+func headerToBase64(username, key string) string {
+	sEnc := base64.StdEncoding.EncodeToString([]byte(fmt.Sprintf("%s%s", username, key)))
+	return fmt.Sprintf("Basic %s", sEnc)
 }
 
 // Get image from tiny api
@@ -110,30 +117,3 @@ func (t Tiny) PostGetJSON(mime string) (*TinyJSON, error) {
 
 	return v, nil
 }
-
-// //ImageJSON get json response from sending image to tiny api
-// func (t Tiny) ImageJSON(url string) (*TinyJSON, error) {
-// 	resp, err := t.Post("application/json")
-// 	if err != nil {
-// 		return nil, err
-// 	}
-//
-// 	// allc TinyJSON struct for parsing JSON response
-// 	v := &TinyJSON{}
-//
-// 	// parse JSON from response
-// 	err = json.NewDecoder(resp.Body).Decode(v)
-// 	if err != nil {
-// 		return nil, err
-// 	}
-//
-// 	// close body response
-// 	defer func() {
-// 		err = resp.Body.Close()
-// 		if err != nil {
-// 			log.Fatal(err)
-// 		}
-// 	}()
-//
-// 	return v, nil
-// }
