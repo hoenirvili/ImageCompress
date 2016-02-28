@@ -29,8 +29,8 @@ var templateList map[string]*template.Template
 // init rednerTemplate with configurations
 func initTemplate() map[string]*template.Template {
 	list := map[string]*template.Template{
-		"index": template.Must(template.ParseFiles("views/header.tmpl", "views/footer.tmpl", "views/index/body.tmpl", "views/index/index.tmpl")),
-		"404":   template.Must(template.ParseFiles("views/header.tmpl", "views/404.tmpl")),
+		"index": template.Must(template.ParseFiles("views/header.tmpl", "views/footer.tmpl", "views/index/body.tmpl", "views/scripts.tmpl", "views/index/index.tmpl")),
+		"404":   template.Must(template.ParseFiles("views/header.tmpl", "views/scripts.tmpl", "views/404.tmpl")),
 	}
 	// return configurations
 	return list
