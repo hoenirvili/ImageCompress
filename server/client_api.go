@@ -85,7 +85,8 @@ func shackToTiny() {
 	// alloc
 	shack := imageshack.NewImageShack()
 	tiny := tinypng.NewTiny()
-	v, err := shack.ImageJSON("https://api.imageshack.com/v2/images/pbzPCsEij")
+	//v, err := shack.ImageJSON("https://api.imageshack.com/v2/images/pbzPCsEij")
+	v, err := shack.ImageJSON("https://api.imageshack.com/v2/images/idbwalqaj")
 	if err != nil {
 		log.Fatal(err)
 	}

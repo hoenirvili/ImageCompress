@@ -1,3 +1,9 @@
+// flex prop
+// display: -webkit-box
+// display: -webkit-flex
+// display: -ms-flexbox
+// display: flex
+
 *
   transition: all 150ms ease-in-out
   margin: 0
@@ -12,23 +18,25 @@ html
 body
   height: 100%
 
-.hopher-image
-  display: flex
-  background: url("static/img/gopher.png") no-repeat
+.hopher-imag
   width: 55rem
-  height: 55rem
+  height: 2rem
+  padding: 2rem
+  border: 1px solid blue
+  position: fixed 
 
 .notfound
-  display: flex
-  position: absolute
-  height: 2rem
-  width: 55rem
+  width: 56rem
+  height: 3rem
+  padding: 2rem
+  position: fixed
+  top: 50%
+  left: 50%
+  
+  //margin-top: -5%
+  //margin-left: -27rem
+  transform: translate(-50%, -50%)
   border: 1px solid blue
-  padding: 3rem
-  top: 38%
-  left: 5%
-
 .notfound__header
   font-size: 2rem
-  
 

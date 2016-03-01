@@ -28,3 +28,6 @@ keys.txt
 
 #sass
 .sass-cache/
+
+#map gen css
+static/css/bundle.css.map 
