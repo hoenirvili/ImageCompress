@@ -14,41 +14,8 @@
 
 package server
 
-import (
-	"log"
-	"net/http"
-
-	"github.com/julienschmidt/httprouter"
-)
-
-const (
-	port = ":8080"
-)
-
 // Init the server components middleware
 func Init() {
 	imgurToTiny()
-	//shackToTiny()
-
-	// load html into cache emplateList
-	// predefine package variable that renderHTML operates on
-	templateList = initTemplate()
-
-	// make a new router
-	router := httprouter.New()
-
-	// custon 404 not found page
-	router.NotFound = &undefineHandler{}
-
-	// define routs
-	router.GET("/", index)
-
-	// static resources
-	router.ServeFiles("/static/*filepath", http.Dir("static"))
-
-	// create http server and listen on port.
-	err := http.ListenAndServe(":8080", router)
-	if err != nil {
-		log.Fatal(err)
-	}
+	shackToTiny()
 }

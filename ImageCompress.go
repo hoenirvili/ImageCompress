@@ -17,6 +17,6 @@ package main
 import "github.com/hoenirvili/ImageCompress/server"
 
 func main() {
-	// start the server
+	// start the process
 	server.Init()
 }
