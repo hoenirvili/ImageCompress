@@ -65,6 +65,11 @@ func (i Imgur) ImageJSON(url string) (*Image, error) {
 	if errJSON != nil {
 		return nil, errJSON
 	}
+	defer func() {
+		if err := resp.Body.Close(); err != nil {
+			panic(err)
+		}
+	}()
 	return imgJSON, nil
 }
 
@@ -81,5 +86,10 @@ func (i Imgur) ImageByte(url string) ([]byte, error) {
 		return nil, err
 	}
 
+	defer func() {
+		if err := resp.Body.Close(); err != nil {
+			panic(err)
+		}
+	}()
 	return readed, nil
 }
